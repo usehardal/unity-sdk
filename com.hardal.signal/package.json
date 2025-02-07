@@ -1,0 +1,19 @@
+{
+  "name": "com.hardal.signal",
+  "version": "1.0.0",
+  "displayName": "Hardal Signal",
+  "description": "Analytics SDK for Unity games",
+  "unity": "2020.3",
+  "dependencies": {},
+  "author": {
+    "name": "Hardal",
+    "url": "https://hardal.com"
+  },
+  "samples": [
+    {
+      "displayName": "Basic Example",
+      "description": "Contains basic usage example",
+      "path": "Samples~/BasicExample"
+    }
+  ]
+}
