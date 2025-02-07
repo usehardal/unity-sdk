@@ -3,7 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
-
+namespace Hardal.Signal
+{
 public class HardalManager : MonoBehaviour
 {
     private static HardalManager _instance;
@@ -169,3 +170,4 @@ public class HardalManager : MonoBehaviour
         }
     }
 } 
+}

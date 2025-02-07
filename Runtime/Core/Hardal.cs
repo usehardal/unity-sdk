@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using System.Security.Cryptography;
 using System.Text;
 using System.Linq;
-
+namespace Hardal.Signal
+{
 public class Hardal : MonoBehaviour
 {
     private static Hardal _instance;
@@ -14,7 +15,7 @@ public class Hardal : MonoBehaviour
     private HardalConfig _config;
     private Queue<EventQueueItem> _eventQueue = new Queue<EventQueueItem>();
     private bool _isProcessingQueue;
-
+        
     [Serializable]
     public class HardalConfig
     {
@@ -220,4 +221,5 @@ public class Hardal : MonoBehaviour
         if (value is IEnumerable<object> list) return "[" + string.Join(",", list.Select(SerializeValue)) + "]";
         return $"\"{value}\"";
     }
+}
 }
