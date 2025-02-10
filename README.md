@@ -19,23 +19,31 @@ Drag the "HardalManager" prefab from Packages/Hardal/Runtime/Prefabs to your sce
 
 2. Initialize HardalManager:
 
-// Option 1: Using prefab
-Drag the "HardalManager" prefab from Packages/Hardal/Runtime/Prefabs to your scene
+Option 1: Using prefab
+Drag the "HardalManager" prefab from Packages/Hardal/Core to your scene
 
-// Option 2: Runtime initialization
+Option 2: Runtime initialization
+
+```cs
 HardalManager.Instance.InitializeHardal("your-endpoint-url");
-
+```
 3. Track events:
 
-// Track simple event
-HardalManager.Instance.TrackEventNonAsync("level_start");
+Track simple event
 
-// Track event with properties
+```cs
+HardalManager.Instance.TrackEventNonAsync("level_start");
+```
+
+Track event with properties
+
+```cs
 HardalManager.Instance.TrackEventNonAsync("player_death", new Dictionary<string, object>
 {
 ["level"] = currentLevel,
 ["cause"] = "enemy_collision"
 });
+```
 
 
 ## Configuration
@@ -45,33 +53,22 @@ HardalManager.Instance.TrackEventNonAsync("player_death", new Dictionary<string,
 
 1. Custom endpoint:
 
+```cs
 HardalManager.Instance.InitializeHardal("your-custom-endpoint-url");
-
+```
 
 2. Event tracking:
 
-// Track simple event
+```cs
 HardalManager.Instance.TrackEventNonAsync("level_start");
-
-// Track event with properties
-
-// Track event with properties
+```
+```cs
 HardalManager.Instance.TrackEventNonAsync("player_death", new Dictionary<string, object>
 {
 ["level"] = currentLevel,
 ["cause"] = "enemy_collision"
 });
-
-3. Event tracking:
-
-// Track simple event
-HardalManager.Instance.TrackEventNonAsync("level_start");
-
-// Track event with properties
-HardalManager.Instance.TrackEventNonAsync("player_death", new Dictionary<string, object>
-{
-["level"] = currentLevel,
-["cause"] = "enemy_collision"
-});     
+```
+ 
 
 
