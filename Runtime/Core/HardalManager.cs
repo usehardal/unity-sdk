@@ -3,171 +3,174 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Linq;
+
 namespace Hardal.Signal
 {
-public class HardalManager : MonoBehaviour
-{
-    private static HardalManager _instance;
-    public static HardalManager Instance
+    public class HardalManager : MonoBehaviour
     {
-        get
+        private static HardalManager _instance;
+        public static HardalManager Instance
         {
-            if (_instance == null)
+            get
             {
-                GameObject go = new GameObject("HardalManager");
-                _instance = go.AddComponent<HardalManager>();
-                DontDestroyOnLoad(go);
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("HardalManager");
+                    _instance = go.AddComponent<HardalManager>();
+                    DontDestroyOnLoad(go);
+                }
+                return _instance;
             }
-            return _instance;
-        }
-    }
-
-    [SerializeField]
-    private string endpoint;
-
-    [SerializeField]
-    private bool autoPageview = true;
-
-    [SerializeField]
-    private bool fetchFromGA4 = false;
-
-    [SerializeField]
-    private bool fetchFromFBPixel = false;
-
-    [SerializeField]
-    private bool fetchFromRTB = false;
-
-    private bool _isInitialized = false;
-
-    private void Awake()
-    {
-        if (_instance != null && _instance != this)
-        {
-            Destroy(gameObject);
-            return;
         }
 
-        _instance = this;
-        DontDestroyOnLoad(gameObject);
-    }
+        [Header("Configuration")]
+        [SerializeField]
+        [Tooltip("The endpoint URL for the Hardal service")]
+        private string endpoint = "https://your-default-endpoint.com";
 
-    private void Start()
-    {
-        if (!_isInitialized)
-        {
-            InitializeHardal();
-        }
-    }
+        private bool _isInitialized = false;
 
-    public void InitializeHardal(string customEndpoint = null)
-    {
-        if (_isInitialized)
+        private void Awake()
         {
-            Debug.LogWarning("[HardalManager] Hardal is already initialized");
-            return;
-        }
-
-        if (!string.IsNullOrEmpty(customEndpoint))
-        {
-            endpoint = customEndpoint;
-        }
-
-        if (string.IsNullOrEmpty(endpoint))
-        {
-            Debug.LogError("[HardalManager] No endpoint provided. Please set the endpoint in the inspector or provide it programmatically.");
-            return;
-        }
-
-        var config = new Hardal.HardalConfig
-        {
-            endpoint = endpoint,
-            options = new Hardal.HardalOptions
+            if (_instance != null && _instance != this)
             {
-                autoPageview = autoPageview,
-                fetchFromGA4 = fetchFromGA4,
-                fetchFromFBPixel = fetchFromFBPixel,
-                fetchFromRTB = fetchFromRTB
+                Destroy(gameObject);
+                return;
             }
-        };
 
-        Hardal.Instance.Init(config);
-        _isInitialized = true;
-        
-        Debug.Log("[HardalManager] Hardal initialized successfully");
-    }
-
-    public async Task TrackEvent(string eventName, Dictionary<string, object> properties = null)
-    {
-        if (!_isInitialized)
-        {
-            Debug.LogError("[HardalManager] Hardal is not initialized. Please call InitializeHardal first.");
-            return;
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
         }
 
-        Debug.Log($"[HardalManager] Tracking event: {eventName}\nProperties: {FormatProperties(properties)}");
-
-        try 
+        private void Start()
         {
-            await Hardal.Instance.TrackEvent(eventName, properties);
-            Debug.Log($"[HardalManager] Successfully sent event: {eventName}");
-        }
-        catch (Exception e)
-        {
-            Debug.LogError($"[HardalManager] Failed to send event {eventName}: {e.Message}");
-        }
-    }
-
-    // Convenience method for tracking events without async/await
-    public void TrackEventNonAsync(string eventName, Dictionary<string, object> properties = null)
-    {
-        if (!_isInitialized)
-        {
-            Debug.LogError("[HardalManager] Hardal is not initialized. Please call InitializeHardal first.");
-            return;
+            if (!_isInitialized)
+            {
+                InitializeHardal();
+            }
         }
 
-        Debug.Log($"[HardalManager] Tracking event (non-async): {eventName}\nProperties: {FormatProperties(properties)}");
-
-        #pragma warning disable CS4014
-        TrackEvent(eventName, properties);
-        #pragma warning restore CS4014
-    }
-
-    private string FormatProperties(Dictionary<string, object> properties)
-    {
-        if (properties == null || properties.Count == 0)
+        public void InitializeHardal(string customEndpoint = null)
         {
-            return "none";
+            if (_isInitialized)
+            {
+                Debug.LogWarning("[HardalManager] Hardal is already initialized");
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(customEndpoint))
+            {
+                endpoint = customEndpoint;
+            }
+
+            if (string.IsNullOrEmpty(endpoint))
+            {
+                Debug.LogError("[HardalManager] No endpoint provided. Please set the endpoint in the inspector or provide it programmatically.");
+                return;
+            }
+
+            var config = new Hardal.HardalConfig
+            {
+                endpoint = endpoint
+            };
+
+            Hardal.Instance.Init(config);
+            _isInitialized = true;
+            
+            Debug.Log("[HardalManager] Hardal initialized successfully");
         }
 
-        return string.Join("\n", properties.Select(kvp => $"  {kvp.Key}: {FormatValue(kvp.Value)}"));
-    }
-
-    private string FormatValue(object value)
-    {
-        if (value == null)
-            return "null";
-        
-        if (value is Dictionary<string, object> dict)
-            return "{\n" + string.Join(",\n", dict.Select(kvp => $"    {kvp.Key}: {FormatValue(kvp.Value)}")) + "\n  }";
-        
-        if (value is IEnumerable<object> list)
-            return "[" + string.Join(", ", list.Select(FormatValue)) + "]";
-        
-        return value.ToString();
-    }
-
-    public bool IsInitialized()
-    {
-        return _isInitialized;
-    }
-
-    private void OnDestroy()
-    {
-        if (_instance == this)
+        public async Task TrackEvent(string eventName, Dictionary<string, object> properties = null)
         {
-            _instance = null;
+            if (!_isInitialized)
+            {
+                Debug.LogError("[HardalManager] Hardal is not initialized. Please call InitializeHardal first.");
+                return;
+            }
+
+            Debug.Log($"[HardalManager] Tracking event: {eventName}\nProperties: {FormatProperties(properties)}");
+
+            try 
+            {
+                await Hardal.Instance.TrackEvent(eventName, properties);
+                Debug.Log($"[HardalManager] Successfully sent event: {eventName}");
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[HardalManager] Failed to send event {eventName}: {e.Message}");
+            }
         }
+
+        // Convenience method for tracking events without async/await
+        public void TrackEventNonAsync(string eventName, Dictionary<string, object> properties = null)
+        {
+            if (!_isInitialized)
+            {
+                Debug.LogError("[HardalManager] Hardal is not initialized. Please call InitializeHardal first.");
+                return;
+            }
+
+            Debug.Log($"[HardalManager] Tracking event (non-async): {eventName}\nProperties: {FormatProperties(properties)}");
+
+            #pragma warning disable CS4014
+            TrackEvent(eventName, properties);
+            #pragma warning restore CS4014
+        }
+
+        private string FormatProperties(Dictionary<string, object> properties)
+        {
+            if (properties == null || properties.Count == 0)
+            {
+                return "none";
+            }
+
+            return string.Join("\n", properties.Select(kvp => $"  {kvp.Key}: {FormatValue(kvp.Value)}"));
+        }
+
+        private string FormatValue(object value)
+        {
+            if (value == null)
+                return "null";
+            
+            if (value is Dictionary<string, object> dict)
+                return "{\n" + string.Join(",\n", dict.Select(kvp => $"    {kvp.Key}: {FormatValue(kvp.Value)}")) + "\n  }";
+            
+            if (value is IEnumerable<object> list)
+                return "[" + string.Join(", ", list.Select(FormatValue)) + "]";
+            
+            return value.ToString();
+        }
+
+        public bool IsInitialized()
+        {
+            return _isInitialized;
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
+        }
+
+#if UNITY_EDITOR
+        // This will show a button in the Inspector
+        [UnityEditor.CustomEditor(typeof(HardalManager))]
+        public class HardalManagerEditor : UnityEditor.Editor
+        {
+            public override void OnInspectorGUI()
+            {
+                DrawDefaultInspector();
+
+                HardalManager manager = (HardalManager)target;
+                
+                UnityEditor.EditorGUILayout.Space();
+                UnityEditor.EditorGUILayout.HelpBox(
+                    "This component should exist only once in your project. It will persist between scenes.",
+                    UnityEditor.MessageType.Info);
+            }
+        }
+#endif
     }
-} 
 }

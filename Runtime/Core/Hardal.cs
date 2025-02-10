@@ -20,17 +20,8 @@ public class Hardal : MonoBehaviour
     public class HardalConfig
     {
         public string endpoint;
-        public HardalOptions options = new HardalOptions();
     }
 
-    [Serializable]
-    public class HardalOptions
-    {
-        public bool autoPageview = true;
-        public bool fetchFromGA4 = false;
-        public bool fetchFromFBPixel = false;
-        public bool fetchFromRTB = false;
-    }
 
     private class EventQueueItem
     {
