@@ -28,6 +28,9 @@ namespace Hardal.Signal
         [Tooltip("The endpoint URL for the Hardal service")]
         private string endpoint = "https://your-default-endpoint.com";
 
+        [Header("Debug Settings")]
+        [SerializeField] private bool enableDebugLogs = false;
+
         private bool _isInitialized = false;
 
         private void Awake()
@@ -54,7 +57,7 @@ namespace Hardal.Signal
         {
             if (_isInitialized)
             {
-                Debug.LogWarning("[HardalManager] Hardal is already initialized");
+                Log("Hardal is already initialized", LogType.Warning);
                 return;
             }
 
@@ -65,7 +68,7 @@ namespace Hardal.Signal
 
             if (string.IsNullOrEmpty(endpoint))
             {
-                Debug.LogError("[HardalManager] No endpoint provided. Please set the endpoint in the inspector or provide it programmatically.");
+                Log("No endpoint provided. Please set the endpoint in the inspector or provide it programmatically.", LogType.Error);
                 return;
             }
 
@@ -77,27 +80,27 @@ namespace Hardal.Signal
             Hardal.Instance.Init(config);
             _isInitialized = true;
             
-            Debug.Log("[HardalManager] Hardal initialized successfully");
+            Log("Hardal initialized successfully");
         }
 
         public async Task TrackEvent(string eventName, Dictionary<string, object> properties = null)
         {
             if (!_isInitialized)
             {
-                Debug.LogError("[HardalManager] Hardal is not initialized. Please call InitializeHardal first.");
+                Log("Hardal is not initialized. Please call InitializeHardal first.", LogType.Error);
                 return;
             }
 
-            Debug.Log($"[HardalManager] Tracking event: {eventName}\nProperties: {FormatProperties(properties)}");
+            Log($"Tracking event: {eventName}\nProperties: {FormatProperties(properties)}");
 
             try 
             {
                 await Hardal.Instance.TrackEvent(eventName, properties);
-                Debug.Log($"[HardalManager] Successfully sent event: {eventName}");
+                Log($"Successfully sent event: {eventName}");
             }
             catch (Exception e)
             {
-                Debug.LogError($"[HardalManager] Failed to send event {eventName}: {e.Message}");
+                Log($"Failed to send event {eventName}: {e.Message}", LogType.Error);
             }
         }
 
@@ -106,11 +109,11 @@ namespace Hardal.Signal
         {
             if (!_isInitialized)
             {
-                Debug.LogError("[HardalManager] Hardal is not initialized. Please call InitializeHardal first.");
+                Log("Hardal is not initialized. Please call InitializeHardal first.", LogType.Error);
                 return;
             }
 
-            Debug.Log($"[HardalManager] Tracking event (non-async): {eventName}\nProperties: {FormatProperties(properties)}");
+            Log($"Tracking event (non-async): {eventName}\nProperties: {FormatProperties(properties)}");
 
             #pragma warning disable CS4014
             TrackEvent(eventName, properties);
@@ -151,6 +154,24 @@ namespace Hardal.Signal
             if (_instance == this)
             {
                 _instance = null;
+            }
+        }
+
+        private void Log(string message, LogType type = LogType.Log)
+        {
+            if (!enableDebugLogs) return;
+            
+            switch (type)
+            {
+                case LogType.Log:
+                    Debug.Log($"[Hardal] {message}");
+                    break;
+                case LogType.Warning:
+                    Debug.LogWarning($"[Hardal] {message}");
+                    break;
+                case LogType.Error:
+                    Debug.LogError($"[Hardal] {message}");
+                    break;
             }
         }
 

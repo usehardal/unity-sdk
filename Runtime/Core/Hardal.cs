@@ -159,7 +159,6 @@ public class Hardal : MonoBehaviour
                 // Convert to JSON directly without the "data" wrapper
                 string json = SerializeDictionary(eventData);
                 
-                Debug.Log($"[Hardal] Sending event data: {json}"); // Log the actual JSON being sent
 
                 string endpointUrl = $"{_endpoint}/push/hardal";
 
@@ -174,7 +173,6 @@ public class Hardal : MonoBehaviour
 
                     if (request.result == UnityWebRequest.Result.Success)
                     {
-                        Debug.Log($"[Hardal] Successfully sent event {item.eventName}");
                         item.completionSource.SetResult(true);
                     }
                     else
