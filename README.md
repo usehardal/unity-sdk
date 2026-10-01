@@ -1,4 +1,16 @@
-# Hardal SDK Documentation
+<p align="center">
+  <a href="https://usehardal.com/">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="https://imge.usehardal.com/cdn/logo/new/svg/o9vnmleauvr2t5xvn9xe.svg?raw=1">
+      <source media="(prefers-color-scheme: light)" srcset="https://imge.usehardal.com/cdn/logo/new/svg/yglazyhcy7kv6053lrso.svg?raw=1">
+      <img src="https://imge.usehardal.com/cdn/logo/new/svg/yglazyhcy7kv6053lrso.svg?raw=1" alt="Hardal" width="180">
+    </picture>
+  </a>
+</p>
+
+# Hardal Signal SDK for Unity
+
+Analytics SDK for Unity games.
 
 ## Table of Contents
 1. Installation
