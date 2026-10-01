@@ -10,19 +10,28 @@
 
 # Hardal Signal SDK for Unity
 
-Analytics SDK for Unity games.
+Track gameplay events such as game starts, level completions, and purchases, and send them to a configured Hardal Signal endpoint. The SDK provides a persistent `HardalManager` component, asynchronous event tracking, and optional debug logging.
 
-## Table of Contents
-1. Installation
-2. Setup
-3. Basic Usage
-4. Debug Mode
-5. Example Usage
+## Getting started
 
-## 1. Installation
-The Hardal SDK can be installed via Unity Package Manager:
-- Add the package to your project via Package Manager
-- Or add the following line to your `manifest.json`:
+You need Unity 2020.3 or later and a Hardal Signal endpoint. Install the package, add `HardalManager` to a scene, and configure the endpoint before sending events.
+
+## Contents
+
+- [Installation](#installation)
+- [Setup](#setup)
+- [Usage](#usage)
+- [Debug mode](#debug-mode)
+- [Examples](#examples)
+- [Important notes](#important-notes)
+- [Best practices](#best-practices)
+- [Support](#support)
+
+## Installation
+
+Clone this repository and, in Unity Package Manager, select **Add package from disk** and choose its [package.json](package.json).
+
+If your configured Unity package registry hosts `com.hardal.signal` version `1.0.0`, you can also add this entry to `Packages/manifest.json`:
   ```json
   {
     "dependencies": {
@@ -31,7 +40,7 @@ The Hardal SDK can be installed via Unity Package Manager:
   }
   ```
 
-## 2. Setup
+## Setup
 
 ### Option A: Using the Menu Item
 1. In Unity Editor, go to `GameObject > Hardal > Create Hardal Manager`
@@ -45,10 +54,10 @@ The Hardal SDK can be installed via Unity Package Manager:
 3. Configure the endpoint URL in the Inspector
 4. The GameObject will persist between scenes
 
-## 3. Basic Usage
+## Usage
 
 ### Initialize Hardal
-```cs
+```csharp
 // The SDK automatically initializes on Start()
 // But you can manually initialize it with a custom endpoint:
 HardalManager.Instance.InitializeHardal("https://your-custom-endpoint.com");
@@ -56,7 +65,7 @@ HardalManager.Instance.InitializeHardal("https://your-custom-endpoint.com");
 
 ### Track Events
 
-```cs
+```csharp
 // Track a simple event
 await HardalManager.Instance.TrackEvent("game_started");
 // Track event with properties
@@ -68,7 +77,7 @@ await HardalManager.Instance.TrackEvent("level_completed", properties);
 HardalManager.Instance.TrackEventNonAsync("item_purchased", properties);
 ```
 
-# 4. Debug Mode
+## Debug mode
 Enable debug logging in the Inspector to see detailed information about:
 - Initialization status
 - Event tracking
@@ -80,10 +89,14 @@ To enable debug mode:
 2. Check "Enable Debug Logs" in the Inspector
 3. View logs in the Unity Console with "[Hardal]" prefix
 
-## 5. Example Usage
+## Examples
 
-### Basic Implementation
-```cs
+### Basic implementation
+```csharp
+using UnityEngine;
+using System.Collections.Generic;
+using Hardal.Signal;
+
 public class GameManager : MonoBehaviour {
   private void Start() {
     // Track game start
@@ -97,9 +110,14 @@ public class GameManager : MonoBehaviour {
   }
 }
 ```
-### Advanced Implementation
+### Advanced implementation
 
-```cs
+```csharp
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Hardal.Signal;
+
 public class AnalyticsManager : MonoBehaviour {
   private async void TrackPurchase(string itemId, float price,
                                    string currency) {
@@ -119,16 +137,24 @@ public class AnalyticsManager : MonoBehaviour {
 }
 ```
 
-## Important Notes
+## Important notes
 - Only one instance of HardalManager should exist in your project
 - The manager persists between scenes using DontDestroyOnLoad
 - Always check if the SDK is initialized before tracking events
 - Use try-catch blocks when working with async methods
 - Enable debug logs during development for better visibility
 
-## Best Practices
+## Best practices
 1. Initialize the SDK early in your game lifecycle
 2. Use meaningful event names
 3. Be consistent with property names
 4. Handle async operations properly
 5. Test with debug mode enabled during development
+## Support
+
+Maintained by [Hardal](https://github.com/usehardal).
+
+- [Hardal documentation](https://docs.usehardal.com)
+- [Report an issue](https://github.com/usehardal/unity-sdk/issues)
+- [Hardal website](https://usehardal.com)
+
